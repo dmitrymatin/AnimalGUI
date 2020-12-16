@@ -168,6 +168,7 @@ public class AnimalGUI extends Frame {
         statusLabel.setBounds(10, 10, 100, 20);
         statusMessageTextArea.setBounds(120, 10, 570, 60);
         statusMessageTextArea.setBackground(new Color(210, 210, 210));
+        statusMessageTextArea.setEditable(false);
 
         statusPanel.add(statusLabel);
         statusPanel.add(statusMessageTextArea);
