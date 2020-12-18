@@ -2,10 +2,11 @@ package app;
 
 import java.awt.*;
 
-public class AnimalGUI extends Frame {
+public class AnimalClientForm extends Frame {
     // networking part
     Panel netWorkingPanel = new Panel();
     Checkbox cbNetWork = new Checkbox("Сеть", false);
+    Button connectButton = new Button("Подключиться");
 
     // listing part
     Panel listingPanel = new Panel();
@@ -32,9 +33,9 @@ public class AnimalGUI extends Frame {
     Panel feedingPanel = new Panel();
     Label feedingLabel = new Label("Покормить");
     Label animalTypeLabel = new Label("кого:");
-    Choice animalTypeChoice = new Choice();
+    Choice animalToFeedChoice = new Choice();
     Label foodTypeLabel = new Label("чем:");
-    Choice foodTypeToFeedChoice = new Choice();
+    Choice foodPreyChoice = new Choice();
     Button feedButton = new Button("Покормить");
 
     // status part
@@ -42,8 +43,7 @@ public class AnimalGUI extends Frame {
     Label statusLabel = new Label("Статус операции:");
     TextArea statusMessageTextArea = new TextArea();
 
-
-    public AnimalGUI(String title) throws HeadlessException {
+    public AnimalClientForm(String title) throws HeadlessException {
         super(title);
 
         setSize(760, 760);
@@ -62,8 +62,11 @@ public class AnimalGUI extends Frame {
         netWorkingPanel.setBounds(30, 30, 700, 100);
         netWorkingPanel.setBackground(Color.LIGHT_GRAY);
 
-        cbNetWork.setBounds(10, 10, 100, 100);
+        cbNetWork.setBounds(10, 10, 40, 30);
+        connectButton.setBounds(10, 50, 120, 30);
+
         netWorkingPanel.add(cbNetWork);
+        netWorkingPanel.add(connectButton);
         netWorkingPanel.setLayout(null);
 
         add(netWorkingPanel);
@@ -145,16 +148,16 @@ public class AnimalGUI extends Frame {
 
         feedingLabel.setBounds(10, 10, 180, 20);
         animalTypeLabel.setBounds(10, 40, 30, 20);
-        animalTypeChoice.setBounds(50, 40, 120, 30);
+        animalToFeedChoice.setBounds(50, 40, 120, 30);
         foodTypeLabel.setBounds(170, 40, 30, 20);
-        foodTypeToFeedChoice.setBounds(210, 40, 120, 30);
+        foodPreyChoice.setBounds(210, 40, 120, 30);
         feedButton.setBounds(10, 75, 120, 30);
 
         feedingPanel.add(feedingLabel);
         feedingPanel.add(animalTypeLabel);
-        feedingPanel.add(animalTypeChoice);
+        feedingPanel.add(animalToFeedChoice);
         feedingPanel.add(foodTypeLabel);
-        feedingPanel.add(foodTypeToFeedChoice);
+        feedingPanel.add(foodPreyChoice);
         feedingPanel.add(feedButton);
 
         feedingPanel.setLayout(null);
@@ -175,5 +178,77 @@ public class AnimalGUI extends Frame {
 
         statusPanel.setLayout(null);
         add(statusPanel);
+    }
+
+    public Checkbox getCbNetWork() {
+        return cbNetWork;
+    }
+
+    public Button getConnectButton() {
+        return connectButton;
+    }
+
+    public CheckboxGroup getCbgListingGroup() {
+        return cbgListingGroup;
+    }
+
+    public Checkbox getCbViewAll() {
+        return cbViewAll;
+    }
+
+    public Checkbox getCbViewPredators() {
+        return cbViewPredators;
+    }
+
+    public Checkbox getCbViewHerbivores() {
+        return cbViewHerbivores;
+    }
+
+    public Checkbox getCbViewGrasses() {
+        return cbViewGrasses;
+    }
+
+    public Button getViewListButton() {
+        return viewListButton;
+    }
+
+    public List getList() {
+        return list;
+    }
+
+    public CheckboxGroup getCbgCreationGroup() {
+        return cbgCreationGroup;
+    }
+
+    public Button getCreateAnimalButton() {
+        return createAnimalButton;
+    }
+
+    public Choice getFoodTypeToCreateChoice() {
+        return foodTypeToCreateChoice;
+    }
+
+    public TextField getNameTextField() {
+        return nameTextField;
+    }
+
+    public TextField getMassTextField() {
+        return massTextField;
+    }
+
+    public Choice getAnimalToFeedChoice() {
+        return animalToFeedChoice;
+    }
+
+    public Choice getFoodPreyChoice() {
+        return foodPreyChoice;
+    }
+
+    public Button getFeedButton() {
+        return feedButton;
+    }
+
+    public TextArea getStatusMessageTextArea() {
+        return statusMessageTextArea;
     }
 }
