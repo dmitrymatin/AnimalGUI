@@ -5,8 +5,11 @@ import java.awt.*;
 public class AnimalClientForm extends Frame {
     // networking part
     Panel netWorkingPanel = new Panel();
-    Checkbox cbNetWork = new Checkbox("Сеть", false);
+    TextField hostTextField = new TextField();
+    TextField portTextField = new TextField();
     Button connectButton = new Button("Подключиться");
+    Button disconnectButton = new Button("Отключиться");
+    Button exitButton = new Button("Выход");
 
     // listing part
     Panel listingPanel = new Panel();
@@ -62,14 +65,22 @@ public class AnimalClientForm extends Frame {
         netWorkingPanel.setBounds(30, 30, 700, 100);
         netWorkingPanel.setBackground(Color.LIGHT_GRAY);
 
-        cbNetWork.setBounds(10, 10, 40, 30);
+        hostTextField.setBounds(10, 10, 120, 20);
+        portTextField.setBounds(140, 10, 120, 20);
         connectButton.setBounds(10, 50, 120, 30);
+        disconnectButton.setBounds(140, 50, 120, 30);
+        exitButton.setBounds(270, 50, 120, 30);
 
-        netWorkingPanel.add(cbNetWork);
+        netWorkingPanel.add(hostTextField);
+        netWorkingPanel.add(portTextField);
         netWorkingPanel.add(connectButton);
+        netWorkingPanel.add(disconnectButton);
+        netWorkingPanel.add(exitButton);
         netWorkingPanel.setLayout(null);
 
         add(netWorkingPanel);
+
+        disconnectButton.setEnabled(false);
     }
 
     private void initialiseListingPart() {
@@ -97,10 +108,6 @@ public class AnimalClientForm extends Frame {
 
         listingPanel.add(list);
 
-
-        //scrollbar.setBounds(100, 100, 50, 140);
-        //listingPanel.add(scrollbar);
-
         listingPanel.setLayout(null);
 
         add(listingPanel);
@@ -108,6 +115,8 @@ public class AnimalClientForm extends Frame {
         for (int i = 0; i < 30; i++)
             list.add(Integer.toString(i));
 
+
+        listingPanel.setEnabled(false);
     }
 
     private void initialiseCreationPart() {
@@ -140,6 +149,9 @@ public class AnimalClientForm extends Frame {
 
         creationPanel.setLayout(null);
         add(creationPanel);
+
+
+        creationPanel.setEnabled(false);
     }
 
     private void initialiseFeedingPart() {
@@ -162,6 +174,8 @@ public class AnimalClientForm extends Frame {
 
         feedingPanel.setLayout(null);
         add(feedingPanel);
+
+        feedingPanel.setEnabled(false);
     }
 
     private void initialiseStatusPart() {
@@ -178,14 +192,55 @@ public class AnimalClientForm extends Frame {
 
         statusPanel.setLayout(null);
         add(statusPanel);
+
+        statusPanel.setEnabled(false);
     }
 
-    public Checkbox getCbNetWork() {
-        return cbNetWork;
+    public void onConnect() {
+        connectButton.setEnabled(false);
+        disconnectButton.setEnabled(true);
+        exitButton.setEnabled(false);
+
+        listingPanel.setEnabled(true);
+        creationPanel.setEnabled(true);
+        feedingPanel.setEnabled(true);
+        statusPanel.setEnabled(true);
+    }
+
+    public void onDisconnect(){
+        connectButton.setEnabled(true);
+        disconnectButton.setEnabled(false);
+        exitButton.setEnabled(true);
+
+        listingPanel.setEnabled(false);
+        creationPanel.setEnabled(false);
+        feedingPanel.setEnabled(false);
+        statusPanel.setEnabled(false);
+    }
+
+    public void onExit() {
+        this.dispose();
+    }
+
+
+    public TextField getHostTextField() {
+        return hostTextField;
+    }
+
+    public TextField getPortTextField() {
+        return portTextField;
     }
 
     public Button getConnectButton() {
         return connectButton;
+    }
+
+    public Button getDisconnectButton() {
+        return disconnectButton;
+    }
+
+    public Button getExitButton() {
+        return exitButton;
     }
 
     public CheckboxGroup getCbgListingGroup() {

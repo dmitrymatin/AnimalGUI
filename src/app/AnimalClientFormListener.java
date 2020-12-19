@@ -10,17 +10,41 @@ public class AnimalClientFormListener implements ActionListener {
     public AnimalClientFormListener(AnimalClientForm form) {
         this.form = form;
 
+        this.form.getConnectButton().addActionListener(this);
+        this.form.getDisconnectButton().addActionListener(this);
+        this.form.getExitButton().addActionListener(this);
+
         this.form.getViewListButton().addActionListener(this);
+        this.form.getCreateAnimalButton().addActionListener(this);
+        this.form.getFeedButton().addActionListener(this);
     }
 
     public void actionPerformed(ActionEvent e) {
-        if (e.getSource() == form.getViewListButton()) {
+        if (e.getSource() == form.getConnectButton()) {
+            connectHandler();
+        } else if (e.getSource() == form.getDisconnectButton()) {
+            disconnectHandler();
+        } else if (e.getSource() == form.getExitButton()) {
+            exitHandler();
+        } else if (e.getSource() == form.getViewListButton()) {
             listingPartHandler();
         } else if (e.getSource() == form.getCreateAnimalButton()) {
             creationPartHandler();
-        } else if (e.getSource() == form.getFeedButton()){
+        } else if (e.getSource() == form.getFeedButton()) {
             feedingPartHandler();
         }
+    }
+
+    private void exitHandler() {
+        form.onExit();
+    }
+
+    private void disconnectHandler() {
+        form.onDisconnect();
+    }
+
+    private void connectHandler() {
+        form.onConnect();
     }
 
     private void listingPartHandler() {
@@ -69,6 +93,7 @@ public class AnimalClientFormListener implements ActionListener {
 
         String whoToFeed = form.getAnimalToFeedChoice().getSelectedItem().trim();
         String prey = form.getFoodPreyChoice().getSelectedItem().trim();
+
 
     }
 }
