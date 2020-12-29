@@ -1,5 +1,9 @@
 package app;
 
+import java.io.*;
+import java.net.Socket;
+import java.net.UnknownHostException;
+
 public class GeneralClientController {
     private static AnimalClientForm clientForm = null;
     private static AnimalClientFormListener clientFormListener = null;
@@ -10,6 +14,7 @@ public class GeneralClientController {
     }
 
     public static void sendRequest(String queryString) {
-        // socket, connect to server
+        String response = NetworkController.sendRequest(queryString);
+        clientForm.getNameTextField().setText(response);
     }
 }

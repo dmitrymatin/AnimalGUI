@@ -44,6 +44,7 @@ public class AnimalClientFormListener implements ActionListener {
     }
 
     private void connectHandler() {
+        NetworkController.connect();
         form.onConnect();
     }
 
@@ -64,7 +65,8 @@ public class AnimalClientFormListener implements ActionListener {
             // просмотр травы
             queryString += " -grass [-all]";
         }
-        GeneralClientController.sendRequest(queryString);
+        //GeneralClientController.sendRequest(queryString);
+        GeneralClientController.sendRequest("cmd1");  // TODO: only for test!
     }
 
     private void creationPartHandler() {
