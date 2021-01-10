@@ -1,9 +1,8 @@
 package app;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.PrintWriter;
+import shared.Request;
+
+import java.io.*;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -11,45 +10,44 @@ public class NetworkController {
     private static Socket socket;
     private static int port;
 
-    private static PrintWriter out;
-    private static BufferedReader in;
+    private static DataOutputStream out;
+    private static DataInputStream in;
 
-    public static void connect() {
+    public static String connect() {
+        String result;
         try {
             port = 7070; // TODO: refactor hardcoded
             socket = new Socket("localhost", port);
 
+            out = new DataOutputStream(socket.getOutputStream());
+            in = new DataInputStream(socket.getInputStream());
+
+            result = getResponse();
         } catch (UnknownHostException e) {
+            result = "Ошибка: неизвестный хост";
             e.printStackTrace();
         } catch (IOException e) {
+            result = "Возникла ошибка при создании подключения";
             e.printStackTrace();
         }
+        return result;
     }
 
     public static void disconnect(){
         try {
+            in.close();
+            out.close();
             socket.close();
-        } catch (IOException exception) {
-            exception.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+            return;
         }
         System.out.println("Клиентский сокет для порта " + port + " закрыт\n");
     }
 
-    public static String sendRequest(String queryString) {
+    public static String sendRequest(Request request) {
         try {
-            out = new PrintWriter(socket.getOutputStream(), true);
-            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-
-            out.print(queryString);
-
-//            System.out.println("Создан клиентский сокет, port: " + port);
-//
-//            InputStream is = socket.getInputStream();
-//            System.out.println("Получена ссылка на объект входного потока");
-//
-//            System.out.println(is.read());
-//            System.out.println("Прочитан байт из объекта входного потока");
-
+            out.writeUTF(request.toString());
             return getResponse();
         } catch (UnknownHostException e) {
             e.printStackTrace();
@@ -64,9 +62,10 @@ public class NetworkController {
 
         String response = null;
         try {
-            response = in.readLine();
+            response = in.readUTF();
         } catch (IOException exception) {
             exception.printStackTrace();
+            response = "возникла ошибка при чтении данных с сервера";
         }
 
         return response;

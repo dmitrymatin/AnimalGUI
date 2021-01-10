@@ -44,29 +44,13 @@ public class AnimalClientFormListener implements ActionListener {
     }
 
     private void connectHandler() {
-        NetworkController.connect();
+        GeneralClientController.connect();
         form.onConnect();
     }
 
     private void listingPartHandler() {
         Checkbox selected = form.getCbgListingGroup().getSelectedCheckbox();
-        String queryString = "get";
-
-        if (selected == form.getCbViewAll()) {
-            // просмотр всех
-            queryString += " -all";
-        } else if (selected == form.getCbViewPredators()) {
-            // просмотр хищников
-            queryString += " -pred [-all]";
-        } else if (selected == form.getCbViewHerbivores()) {
-            // просмотр травоядных
-            queryString += " -herb [-all]";
-        } else if (selected == form.getCbViewGrasses()) {
-            // просмотр травы
-            queryString += " -grass [-all]";
-        }
-        //GeneralClientController.sendRequest(queryString);
-        GeneralClientController.sendRequest("cmd1");  // TODO: only for test!
+        GeneralClientController.prepareListingRequest(selected.getLabel());
     }
 
     private void creationPartHandler() {
@@ -84,8 +68,6 @@ public class AnimalClientFormListener implements ActionListener {
             queryString += (" -grass");
         }
         queryString += (" -name=" + foodName + " -mass=" + foodMass); // todo: validate mass is number?
-
-        GeneralClientController.sendRequest(queryString);
     }
 
     private void feedingPartHandler() {
@@ -95,7 +77,5 @@ public class AnimalClientFormListener implements ActionListener {
 
         String whoToFeed = form.getAnimalToFeedChoice().getSelectedItem().trim();
         String prey = form.getFoodPreyChoice().getSelectedItem().trim();
-
-
     }
 }
