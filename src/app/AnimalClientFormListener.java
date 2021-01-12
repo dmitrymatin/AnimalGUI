@@ -118,8 +118,8 @@ public class AnimalClientFormListener implements ActionListener {
 
 
     private void updateFormData() {
-        Map<String, String> allFoods = GeneralClientController.sendGetRequest("all");
-        Map<String, String> animals = GeneralClientController.sendGetRequest("anim");
+        Map<String, String> allFoods = GeneralClientController.sendGetRequest("Все");
+        Map<String, String> animals = GeneralClientController.sendGetRequest("Животные");
 
         // get all foods and animals to populate comboboxes in feeding part
         if (allFoods != null) {

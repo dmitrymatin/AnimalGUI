@@ -9,6 +9,7 @@ import shared.Request;
 import shared.Response;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -68,11 +69,12 @@ public class GeneralClientController {
                 break;
             case "foodTypes":
                 requestArgs.add("foodTypes");
+                break;
             default:
                 throw new IllegalArgumentException("Некорректное значение выбора");
         }
 
-        Request request = new Request(command, (String[]) requestArgs.toArray());
+        Request request = new Request(command, Arrays.copyOf(requestArgs.toArray(),requestArgs.size(), String[].class));
         Response response = sendRequest(request);
 
         return parseJsonString(response.getMessage());
@@ -101,7 +103,7 @@ public class GeneralClientController {
         try {
             objectCollection = objectMapper.readValue(responseString, typeRef);
         } catch (JsonProcessingException e) {
-            e.printStackTrace();
+            //e.printStackTrace();
         }
         return objectCollection;
     }
