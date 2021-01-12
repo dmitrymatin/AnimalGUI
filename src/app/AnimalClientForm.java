@@ -4,9 +4,9 @@ import java.awt.*;
 import java.util.HashMap;
 
 public class AnimalClientForm extends Frame {
-    HashMap<String, String> availableFoodTypes = new HashMap<>();
-    HashMap<String, String> animals = new HashMap<>();
-    HashMap<String, String> foods = new HashMap<>();
+    HashMap<String, FoodDto> availableFoodTypes = new HashMap<>();
+    HashMap<String, FoodDto> animals = new HashMap<>();
+    HashMap<String, FoodDto> foods = new HashMap<>();
 
     // networking part
     Panel netWorkingPanel = new Panel();
@@ -30,7 +30,6 @@ public class AnimalClientForm extends Frame {
     Panel creationPanel = new Panel();
     Label creationLabel = new Label("Создание животного или травы");
     CheckboxGroup cbgCreationGroup = new CheckboxGroup();
-    Checkbox cb5 = new Checkbox("fff", false);
     Button createAnimalButton = new Button("Создать");
     Choice foodTypeToCreateChoice = new Choice();
     Label nameLabel = new Label("Имя");
@@ -138,7 +137,6 @@ public class AnimalClientForm extends Frame {
         creationPanel.setBounds(30, 320, 700, 130);
 
         creationLabel.setBounds(10, 10, 180, 30);
-        cb5.setBounds(470, 10, 170, 50);
         foodTypeToCreateChoice.setBounds(200, 15, 120, 30);
 
         nameLabel.setBounds(10, 50, 30, 20);
@@ -155,7 +153,6 @@ public class AnimalClientForm extends Frame {
          */
 
         creationPanel.add(creationLabel);
-        creationPanel.add(cb5);
         creationPanel.add(createAnimalButton);
         creationPanel.add(foodTypeToCreateChoice);
         creationPanel.add(nameLabel);
@@ -248,15 +245,15 @@ public class AnimalClientForm extends Frame {
         lastCheckboxCoordX = cb.getX();
     }
 
-    public HashMap<String, String> getAvailableFoodTypes() {
+    public HashMap<String, FoodDto> getAvailableFoodTypes() {
         return availableFoodTypes;
     }
 
-    public HashMap<String, String> getAnimals(){
+    public HashMap<String, FoodDto> getAnimals(){
         return animals;
     }
 
-    public HashMap<String, String> getFoods(){
+    public HashMap<String, FoodDto> getFoods(){
         return foods;
     }
 

@@ -41,14 +41,14 @@ public class AnimalClientFormListener implements ActionListener {
     }
 
     private void connectHandler() {
-        Map<String, String> availableFoodTypes = GeneralClientController.sendConnectRequest();
+        Map<String, FoodDto> availableFoodTypes = GeneralClientController.sendConnectRequest();
 
         // initialising choice box and adding checkboxes dynamically
         form.getAvailableFoodTypes().putAll(availableFoodTypes);
         if (availableFoodTypes != null) {
-            for (String foodType : availableFoodTypes.values()) {
-                form.getFoodTypeToCreateChoice().add(foodType);
-                form.addCheckboxToCreationGroup(foodType);
+            for (FoodDto foodType : availableFoodTypes.values()) {
+                form.getFoodTypeToCreateChoice().add(foodType.getInfo());
+                form.addCheckboxToCreationGroup(foodType.getInfo());
             }
         }
 
@@ -65,11 +65,11 @@ public class AnimalClientFormListener implements ActionListener {
 
     private void listingPartHandler() {
         Checkbox selected = form.getCbgListingGroup().getSelectedCheckbox();
-        Map<String, String> foodCollection = GeneralClientController.sendGetRequest(selected.getLabel());
+        Map<String, FoodDto> foodCollection = GeneralClientController.sendGetRequest(selected.getLabel());
 
         if (foodCollection != null) {
-            for (String food : foodCollection.values())
-                form.getList().add(food);
+            for (FoodDto food : foodCollection.values())
+                form.getList().add(food.getInfo());
         }
     }
 
@@ -80,7 +80,7 @@ public class AnimalClientFormListener implements ActionListener {
         String choiceKey = "";
 
         for (String key : form.getAvailableFoodTypes().keySet()) {
-            if (choiceStr.equals(form.getAvailableFoodTypes().get(key))) {
+            if (choiceStr.equals(form.getAvailableFoodTypes().get(key).getInfo())) {
                 choiceKey = key;
                 break;
             }
@@ -97,7 +97,7 @@ public class AnimalClientFormListener implements ActionListener {
 
         String animalToFeedKey = "";
         for (String key : form.getAnimals().keySet()){
-            if (animalToFeedChoice.equals(form.getAnimals().get(key))){
+            if (animalToFeedChoice.equals(form.getAnimals().get(key).getInfo())){
                 animalToFeedKey = key;
                 break;
             }
@@ -105,7 +105,7 @@ public class AnimalClientFormListener implements ActionListener {
 
         String preyChoiceKey = "";
         for (String key : form.getFoods().keySet()){
-            if (preyChoice.equals(form.getFoods().get(key))){
+            if (preyChoice.equals(form.getFoods().get(key).getInfo())){
                 preyChoiceKey = key;
                 break;
             }
@@ -118,20 +118,20 @@ public class AnimalClientFormListener implements ActionListener {
 
 
     private void updateFormData() {
-        Map<String, String> allFoods = GeneralClientController.sendGetRequest("Все");
-        Map<String, String> animals = GeneralClientController.sendGetRequest("Животные");
+        Map<String, FoodDto> allFoods = GeneralClientController.sendGetRequest("Все");
+        Map<String, FoodDto> animals = GeneralClientController.sendGetRequest("Животные");
 
         // get all foods and animals to populate comboboxes in feeding part
         if (allFoods != null) {
             form.getFoods().putAll(allFoods);
-            for (String food : allFoods.values())
-                form.getFoodPreyChoice().add(food);
+            for (FoodDto food : allFoods.values())
+                form.getFoodPreyChoice().add(food.getInfo());
         }
 
         if (animals != null) {
             form.getAnimals().putAll(animals);
-            for (String animal : animals.values())
-                form.getAnimalToFeedChoice().add(animal);
+            for (FoodDto animal : animals.values())
+                form.getAnimalToFeedChoice().add(animal.getInfo());
         }
     }
 }

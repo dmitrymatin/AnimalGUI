@@ -19,7 +19,7 @@ public class GeneralClientController {
     private static Logger logger = null;
 
     private static final ObjectMapper objectMapper = new ObjectMapper();
-    private static final TypeReference<HashMap<String, String>> typeRef = new TypeReference<HashMap<String, String>>() {
+    private static final TypeReference<HashMap<String, FoodDto>> typeRef = new TypeReference<HashMap<String, FoodDto>>() {
     };
 
     public static void startApp() {
@@ -28,7 +28,7 @@ public class GeneralClientController {
         clientFormListener = new AnimalClientFormListener(clientForm);
     }
 
-    public static Map<String, String> sendConnectRequest() {
+    public static Map<String, FoodDto> sendConnectRequest() {
         String result = NetworkController.connect();
         logger.logMessage(result);
 
@@ -47,7 +47,7 @@ public class GeneralClientController {
         logger.logMessage(response.getMessage());
     }
 
-    public static Map<String, String> sendGetRequest(String argument) {
+    public static Map<String, FoodDto> sendGetRequest(String argument) {
         final String command = "get";
         ArrayList<String> requestArgs = new ArrayList<>();
 
@@ -98,12 +98,12 @@ public class GeneralClientController {
         logger.logMessage(response.getMessage());
     }
 
-    public static Map<String, String> parseJsonString(String responseString) {
-        Map<String, String> objectCollection = null;
+    public static Map<String, FoodDto> parseJsonString(String responseString) {
+        Map<String, FoodDto> objectCollection = null;
         try {
             objectCollection = objectMapper.readValue(responseString, typeRef);
         } catch (JsonProcessingException e) {
-            //e.printStackTrace();
+            e.printStackTrace();
         }
         return objectCollection;
     }
