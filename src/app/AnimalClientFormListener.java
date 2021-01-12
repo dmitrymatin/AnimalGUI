@@ -3,6 +3,7 @@ package app;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Map;
 
 public class AnimalClientFormListener implements ActionListener {
     private final AnimalClientForm form;
@@ -39,43 +40,98 @@ public class AnimalClientFormListener implements ActionListener {
         form.onExit();
     }
 
-    private void disconnectHandler() {
-        form.onDisconnect();
+    private void connectHandler() {
+        Map<String, String> availableFoodTypes = GeneralClientController.sendConnectRequest();
+
+        // initialising choice box and adding checkboxes dynamically
+        form.getAvailableFoodTypes().putAll(availableFoodTypes);
+        if (availableFoodTypes != null) {
+            for (String foodType : availableFoodTypes.values()) {
+                form.getFoodTypeToCreateChoice().add(foodType);
+                form.addCheckboxToCreationGroup(foodType);
+            }
+        }
+
+        updateFormData();
+
+        form.onConnect();
     }
 
-    private void connectHandler() {
-        GeneralClientController.connect();
-        form.onConnect();
+    private void disconnectHandler() {
+        GeneralClientController.sendDisconnectRequest();
+
+        form.onDisconnect();
     }
 
     private void listingPartHandler() {
         Checkbox selected = form.getCbgListingGroup().getSelectedCheckbox();
-        GeneralClientController.prepareListingRequest(selected.getLabel());
+        Map<String, String> foodCollection = GeneralClientController.sendGetRequest(selected.getLabel());
+
+        if (foodCollection != null) {
+            for (String food : foodCollection.values())
+                form.getList().add(food);
+        }
     }
 
     private void creationPartHandler() {
         String choiceStr = form.getFoodTypeToCreateChoice().getSelectedItem();
         String foodName = form.getNameTextField().getText().trim();
         String foodMass = form.getMassTextField().getText().trim();
+        String choiceKey = "";
 
-        String queryString = "create";
-
-        if (choiceStr.equals("хищник")) {
-            queryString += (" -pred");
-        } else if (choiceStr.equals("травоядное")) {
-            queryString += (" -herb");
-        } else if (choiceStr.equals("трава")) {
-            queryString += (" -grass");
+        for (String key : form.getAvailableFoodTypes().keySet()) {
+            if (choiceStr.equals(form.getAvailableFoodTypes().get(key))) {
+                choiceKey = key;
+                break;
+            }
         }
-        queryString += (" -name=" + foodName + " -mass=" + foodMass); // todo: validate mass is number?
+
+        GeneralClientController.sendCreateRequest(choiceKey, foodName, foodMass);
+
+        updateFormData();
     }
 
     private void feedingPartHandler() {
-        //Object whoToFeed = form.getAnimalToFeedChoice().getSelectedObjects()[0]; // see: https://docs.oracle.com/javase/7/docs/api/java/awt/Choice.html#getSelectedObjects()
-        //Object prey = form.getFoodPreyChoice().getSelectedObjects()[0];
-        //if (whoToFeed instanceof )
+        String animalToFeedChoice = form.getAnimalToFeedChoice().getSelectedItem();
+        String preyChoice = form.getFoodPreyChoice().getSelectedItem();
 
-        String whoToFeed = form.getAnimalToFeedChoice().getSelectedItem().trim();
-        String prey = form.getFoodPreyChoice().getSelectedItem().trim();
+        String animalToFeedKey = "";
+        for (String key : form.getAnimals().keySet()){
+            if (animalToFeedChoice.equals(form.getAnimals().get(key))){
+                animalToFeedKey = key;
+                break;
+            }
+        }
+
+        String preyChoiceKey = "";
+        for (String key : form.getFoods().keySet()){
+            if (preyChoice.equals(form.getFoods().get(key))){
+                preyChoiceKey = key;
+                break;
+            }
+        }
+
+        GeneralClientController.sendFeedRequest(animalToFeedKey, preyChoiceKey);
+
+        updateFormData();
+    }
+
+
+    private void updateFormData() {
+        Map<String, String> allFoods = GeneralClientController.sendGetRequest("all");
+        Map<String, String> animals = GeneralClientController.sendGetRequest("anim");
+
+        // get all foods and animals to populate comboboxes in feeding part
+        if (allFoods != null) {
+            form.getFoods().putAll(allFoods);
+            for (String food : allFoods.values())
+                form.getFoodPreyChoice().add(food);
+        }
+
+        if (animals != null) {
+            form.getAnimals().putAll(animals);
+            for (String animal : animals.values())
+                form.getAnimalToFeedChoice().add(animal);
+        }
     }
 }

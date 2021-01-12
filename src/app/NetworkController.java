@@ -33,7 +33,7 @@ public class NetworkController {
         return result;
     }
 
-    public static void disconnect(){
+    public static void disconnect() {
         try {
             in.close();
             out.close();
@@ -49,17 +49,13 @@ public class NetworkController {
         try {
             out.writeUTF(request.toString());
             return getResponse();
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
+            return "";
         }
-
-        return null;
     }
 
-    public static String getResponse(){
-
+    public static String getResponse() {
         String response = null;
         try {
             response = in.readUTF();
