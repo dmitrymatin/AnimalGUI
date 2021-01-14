@@ -12,8 +12,8 @@ public class Response {
     }
 
     public static Response parseResponse(String responseString) {
-        boolean closureStatus = responseString.length() > 3 && responseString.contains("стоп"); //todo regex
-        boolean errorStatus = responseString.length() > 6 && responseString.contains("ошибка");
+        boolean closureStatus = responseString.startsWith("стоп"); //todo regex
+        boolean errorStatus = responseString.startsWith("ошибка");
 
         return new Response(closureStatus, errorStatus, responseString);
     }
