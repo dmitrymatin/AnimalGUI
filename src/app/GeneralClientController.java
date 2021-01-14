@@ -56,10 +56,10 @@ public class GeneralClientController {
             case "Все":
                 requestArgs.add("all");
                 break;
-            case "Хищники":
+            case "Хищник":
                 requestArgs.add("pdt");
                 break;
-            case "Травоядные":
+            case "Травоядное":
                 requestArgs.add("hbv");
                 break;
             case "Трава":

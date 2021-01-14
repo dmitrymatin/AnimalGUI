@@ -235,8 +235,8 @@ public class AnimalClientForm extends Frame {
         this.dispose();
     }
 
-    public void addCheckboxToCreationGroup(String foodType) {
-        Checkbox cb = new Checkbox(foodType, cbgCreationGroup, false);
+    public void addCheckboxToListingGroup(String foodType) {
+        Checkbox cb = new Checkbox(foodType, cbgListingGroup, false);
 
         final int offset = 150;
         cb.setBounds(lastCheckboxCoordX + offset, cbViewAll.getY(), cbViewAll.getWidth(), cbViewAll.getHeight());

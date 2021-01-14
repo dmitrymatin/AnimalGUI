@@ -50,7 +50,7 @@ public class AnimalClientFormListener implements ActionListener {
         if (availableFoodTypes != null) {
             for (String foodType : availableFoodTypes.values()) {
                 form.getFoodTypeToCreateChoice().add(foodType);
-                form.addCheckboxToCreationGroup(foodType);
+                form.addCheckboxToListingGroup(foodType);
             }
         }
 
