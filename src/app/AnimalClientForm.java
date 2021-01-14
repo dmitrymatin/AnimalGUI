@@ -1,12 +1,15 @@
 package app;
 
 import java.awt.*;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 public class AnimalClientForm extends Frame {
     HashMap<String, String> availableFoodTypes = new HashMap<>();
     HashMap<String, FoodDto> animals = new HashMap<>();
     HashMap<String, FoodDto> foods = new HashMap<>();
+    ArrayList<Checkbox> checkboxes = new ArrayList<>();
 
     // networking part
     Panel netWorkingPanel = new Panel();
@@ -20,8 +23,7 @@ public class AnimalClientForm extends Frame {
     Panel listingPanel = new Panel();
     CheckboxGroup cbgListingGroup = new CheckboxGroup();
     //Scrollbar scrollbar = new Scrollbar();
-    Checkbox cbViewAll; /*cbViewPredators, cbViewHerbivores, cbViewGrasses;*/
-    int lastCheckboxCoordX;
+    /*Checkbox cbViewAll; cbViewPredators, cbViewHerbivores, cbViewGrasses;*/
     Button viewListButton = new Button("Просмотреть");
 
     List list = new List();
@@ -92,7 +94,7 @@ public class AnimalClientForm extends Frame {
     }
 
     private void initialiseListingPart() {
-        cbViewAll = new Checkbox("Все", cbgListingGroup, false);
+        //cbViewAll = new Checkbox("Все", cbgListingGroup, false);
         /*
         cbViewPredators = new Checkbox("Хищники", cbgListingGroup, false);
         cbViewHerbivores = new Checkbox("Травоядные", cbgListingGroup, false);
@@ -102,18 +104,19 @@ public class AnimalClientForm extends Frame {
         listingPanel.setBounds(30, 150, 700, 150);
         listingPanel.setBackground(new Color(226, 226, 226));
 
-        cbViewAll.setBounds(10, 0, 150, 50);
-        lastCheckboxCoordX = cbViewAll.getX();
+//        cbViewAll.setBounds(10, 0, 150, 50);
+//        lastCheckboxCoordX = cbViewAll.getX();
+
         /*
         cbViewPredators.setBounds(160, 0, 150, 50);
         cbViewHerbivores.setBounds(310, 0, 150, 50);
         cbViewGrasses.setBounds(460, 0, 150, 50);
          */
 
-        list.setBounds(10, 50, 300, 80);
-        viewListButton.setBounds(320, 100, 120, 30);
+        list.setBounds(10, 50, 400, 80);
+        viewListButton.setBounds(420, 100, 120, 30);
 
-        listingPanel.add(cbViewAll);
+        //listingPanel.add(cbViewAll);
         /*
         listingPanel.add(cbViewPredators);
         listingPanel.add(cbViewHerbivores);
@@ -126,8 +129,8 @@ public class AnimalClientForm extends Frame {
 
         add(listingPanel);
 
-        for (int i = 0; i < 30; i++)
-            list.add(Integer.toString(i));
+//        for (int i = 0; i < 30; i++)
+//            list.add(Integer.toString(i));
 
         listingPanel.setEnabled(false);
     }
@@ -169,13 +172,13 @@ public class AnimalClientForm extends Frame {
 
     private void initialiseFeedingPart() {
         feedingPanel.setBackground(new Color(226, 226, 226));
-        feedingPanel.setBounds(30, 470, 700, 170);
+        feedingPanel.setBounds(30, 470, 700, 120);
 
         feedingLabel.setBounds(10, 10, 180, 20);
         animalTypeLabel.setBounds(10, 40, 30, 20);
-        animalToFeedChoice.setBounds(50, 40, 120, 30);
-        foodTypeLabel.setBounds(170, 40, 30, 20);
-        foodPreyChoice.setBounds(210, 40, 120, 30);
+        animalToFeedChoice.setBounds(50, 40, 350, 30);
+        foodTypeLabel.setBounds(370, 40, 30, 20);
+        foodPreyChoice.setBounds(410, 40, 350, 30);
         feedButton.setBounds(10, 75, 120, 30);
 
         feedingPanel.add(feedingLabel);
@@ -193,10 +196,10 @@ public class AnimalClientForm extends Frame {
 
     private void initialiseStatusPart() {
         statusPanel.setBackground(new Color(226, 226, 226));
-        statusPanel.setBounds(30, 660, 700, 80);
+        statusPanel.setBounds(30, 610, 700, 130);
 
         statusLabel.setBounds(10, 10, 100, 20);
-        statusMessageTextArea.setBounds(120, 10, 570, 60);
+        statusMessageTextArea.setBounds(120, 10, 570, 110);
         statusMessageTextArea.setBackground(new Color(210, 210, 210));
         statusMessageTextArea.setEditable(false);
 
@@ -235,25 +238,53 @@ public class AnimalClientForm extends Frame {
         this.dispose();
     }
 
-    public void addCheckboxToListingGroup(String foodType) {
-        Checkbox cb = new Checkbox(foodType, cbgListingGroup, false);
 
+    public void updateAvailableFoodTypes(Map<String, String> foodTypes) {
+        this.availableFoodTypes.clear();
+        this.availableFoodTypes.putAll(foodTypes);
+
+        updateListingCheckboxes();
+
+        updateFoodCreationChoice();
+    }
+
+    private void updateListingCheckboxes() {
+        for (Checkbox cb : checkboxes) {
+            listingPanel.remove(cb);
+        }
+        this.checkboxes.clear();
+
+        int x = 10;
         final int offset = 150;
-        cb.setBounds(lastCheckboxCoordX + offset, cbViewAll.getY(), cbViewAll.getWidth(), cbViewAll.getHeight());
-        listingPanel.add(cb);
+        Checkbox cb = new Checkbox("Все", cbgListingGroup, false);
+        cb.setBounds(x, 0, 150, 50);
+        this.checkboxes.add(cb);
+        this.listingPanel.add(cb);
 
-        lastCheckboxCoordX = cb.getX();
+        for (String aft : this.availableFoodTypes.values()) {
+            cb = new Checkbox(aft, cbgListingGroup, false);
+            cb.setBounds(x += offset, 0, 150, 50);
+
+            this.checkboxes.add(cb);
+            this.listingPanel.add(cb);
+        }
+    }
+
+    private void updateFoodCreationChoice() {
+        this.foodTypeToCreateChoice.removeAll();
+        for (String aft : this.availableFoodTypes.values())
+            foodTypeToCreateChoice.add(aft);
     }
 
     public HashMap<String, String> getAvailableFoodTypes() {
         return availableFoodTypes;
     }
 
-    public HashMap<String, FoodDto> getAnimals(){
+    public HashMap<String, FoodDto> getAnimals() {
         return animals;
     }
 
-    public HashMap<String, FoodDto> getFoods(){
+    public HashMap<String, FoodDto> getFoods() {
         return foods;
     }
 
@@ -281,9 +312,9 @@ public class AnimalClientForm extends Frame {
         return cbgListingGroup;
     }
 
-    public Checkbox getCbViewAll() {
-        return cbViewAll;
-    }
+//    public Checkbox getCbViewAll() {
+//        return cbViewAll;
+//    }
 
 /*    public Checkbox getCbViewPredators() {
         return cbViewPredators;
@@ -340,4 +371,5 @@ public class AnimalClientForm extends Frame {
     public TextArea getStatusMessageTextArea() {
         return statusMessageTextArea;
     }
+
 }

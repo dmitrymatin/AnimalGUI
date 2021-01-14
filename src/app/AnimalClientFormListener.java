@@ -45,14 +45,8 @@ public class AnimalClientFormListener implements ActionListener {
 
         Map<String, String> availableFoodTypes = GeneralClientController.sendGetFoodTypesRequest();
 
-        // initialising choice box and adding checkboxes dynamically
-        form.getAvailableFoodTypes().putAll(availableFoodTypes);
-        if (availableFoodTypes != null) {
-            for (String foodType : availableFoodTypes.values()) {
-                form.getFoodTypeToCreateChoice().add(foodType);
-                form.addCheckboxToListingGroup(foodType);
-            }
-        }
+        // initialising choices and adding checkboxes dynamically
+        form.updateAvailableFoodTypes(availableFoodTypes);
 
         updateFormData();
 
