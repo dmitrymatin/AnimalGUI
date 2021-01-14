@@ -41,14 +41,16 @@ public class AnimalClientFormListener implements ActionListener {
     }
 
     private void connectHandler() {
-        Map<String, FoodDto> availableFoodTypes = GeneralClientController.sendConnectRequest();
+        GeneralClientController.sendConnectRequest();
+
+        Map<String, String> availableFoodTypes = GeneralClientController.sendGetFoodTypesRequest();
 
         // initialising choice box and adding checkboxes dynamically
         form.getAvailableFoodTypes().putAll(availableFoodTypes);
         if (availableFoodTypes != null) {
-            for (FoodDto foodType : availableFoodTypes.values()) {
-                form.getFoodTypeToCreateChoice().add(foodType.getInfo());
-                form.addCheckboxToCreationGroup(foodType.getInfo());
+            for (String foodType : availableFoodTypes.values()) {
+                form.getFoodTypeToCreateChoice().add(foodType);
+                form.addCheckboxToCreationGroup(foodType);
             }
         }
 
@@ -65,7 +67,7 @@ public class AnimalClientFormListener implements ActionListener {
 
     private void listingPartHandler() {
         Checkbox selected = form.getCbgListingGroup().getSelectedCheckbox();
-        Map<String, FoodDto> foodCollection = GeneralClientController.sendGetRequest(selected.getLabel());
+        Map<String, FoodDto> foodCollection = GeneralClientController.sendGetFoodsRequest(selected.getLabel());
 
         if (foodCollection != null) {
             for (FoodDto food : foodCollection.values())
@@ -80,7 +82,7 @@ public class AnimalClientFormListener implements ActionListener {
         String choiceKey = "";
 
         for (String key : form.getAvailableFoodTypes().keySet()) {
-            if (choiceStr.equals(form.getAvailableFoodTypes().get(key).getInfo())) {
+            if (choiceStr.equals(form.getAvailableFoodTypes().get(key))) {
                 choiceKey = key;
                 break;
             }
@@ -118,8 +120,8 @@ public class AnimalClientFormListener implements ActionListener {
 
 
     private void updateFormData() {
-        Map<String, FoodDto> allFoods = GeneralClientController.sendGetRequest("Все");
-        Map<String, FoodDto> animals = GeneralClientController.sendGetRequest("Животные");
+        Map<String, FoodDto> allFoods = GeneralClientController.sendGetFoodsRequest("Все");
+        Map<String, FoodDto> animals = GeneralClientController.sendGetFoodsRequest("Животные");
 
         // get all foods and animals to populate comboboxes in feeding part
         if (allFoods != null) {

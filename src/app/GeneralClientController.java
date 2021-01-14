@@ -18,21 +18,15 @@ public class GeneralClientController {
     private static AnimalClientFormListener clientFormListener = null;
     private static Logger logger = null;
 
-    private static final ObjectMapper objectMapper = new ObjectMapper();
-    private static final TypeReference<HashMap<String, FoodDto>> typeRef = new TypeReference<HashMap<String, FoodDto>>() {
-    };
-
     public static void startApp() {
         clientForm = new AnimalClientForm("Animal World");
         logger = new FormLogger(clientForm.getStatusMessageTextArea());
         clientFormListener = new AnimalClientFormListener(clientForm);
     }
 
-    public static Map<String, FoodDto> sendConnectRequest() {
+    public static void sendConnectRequest() {
         String result = NetworkController.connect();
         logger.logMessage(result);
-
-        return sendGetRequest("foodTypes");
     }
 
 
@@ -47,11 +41,19 @@ public class GeneralClientController {
         logger.logMessage(response.getMessage());
     }
 
-    public static Map<String, FoodDto> sendGetRequest(String argument) {
-        final String command = "get";
+    public static Map<String, String> sendGetFoodTypesRequest() {
+        final String foodTypesAlias = "foodTypes";
+
+        Response response = sendGetRequest(new String[]{foodTypesAlias});
+        logger.logMessage("Загружены данные для " + "\"" + foodTypesAlias + "\"");
+
+        return parseJsonString(response.getMessage());
+    }
+
+    public static Map<String, FoodDto> sendGetFoodsRequest(String foodType) {
         ArrayList<String> requestArgs = new ArrayList<>();
 
-        switch (argument) {
+        switch (foodType) {
             case "Все":
                 requestArgs.add("all");
                 break;
@@ -67,15 +69,12 @@ public class GeneralClientController {
             case "Животные":
                 requestArgs.add("anim");
                 break;
-            case "foodTypes":
-                requestArgs.add("foodTypes");
-                break;
             default:
                 throw new IllegalArgumentException("Некорректное значение выбора");
         }
 
-        Request request = new Request(command, Arrays.copyOf(requestArgs.toArray(),requestArgs.size(), String[].class));
-        Response response = sendRequest(request);
+        Response response = sendGetRequest(Arrays.copyOf(requestArgs.toArray(), requestArgs.size(), String[].class));
+        logger.logMessage("Загружены данные для " + "\"" + foodType + "\"");
 
         return parseJsonString(response.getMessage());
     }
@@ -98,14 +97,25 @@ public class GeneralClientController {
         logger.logMessage(response.getMessage());
     }
 
-    public static Map<String, FoodDto> parseJsonString(String responseString) {
-        Map<String, FoodDto> objectCollection = null;
+    public static <E> Map<String, E> parseJsonString(String responseString) {
+        Map<String, E> objectCollection = null;
+        final ObjectMapper objectMapper = new ObjectMapper();
+        final TypeReference<HashMap<String, E>> typeRef = new TypeReference<HashMap<String, E>>() {
+        };
+
         try {
             objectCollection = objectMapper.readValue(responseString, typeRef);
         } catch (JsonProcessingException e) {
             e.printStackTrace();
         }
         return objectCollection;
+    }
+
+    private static Response sendGetRequest(String[] arguments) {
+        final String command = "get";
+
+        Request request = new Request(command, arguments);
+        return sendRequest(request);
     }
 
     private static Response sendRequest(Request request) {

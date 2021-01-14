@@ -4,7 +4,7 @@ import java.awt.*;
 import java.util.HashMap;
 
 public class AnimalClientForm extends Frame {
-    HashMap<String, FoodDto> availableFoodTypes = new HashMap<>();
+    HashMap<String, String> availableFoodTypes = new HashMap<>();
     HashMap<String, FoodDto> animals = new HashMap<>();
     HashMap<String, FoodDto> foods = new HashMap<>();
 
@@ -245,7 +245,7 @@ public class AnimalClientForm extends Frame {
         lastCheckboxCoordX = cb.getX();
     }
 
-    public HashMap<String, FoodDto> getAvailableFoodTypes() {
+    public HashMap<String, String> getAvailableFoodTypes() {
         return availableFoodTypes;
     }
 
