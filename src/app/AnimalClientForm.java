@@ -26,7 +26,7 @@ public class AnimalClientForm extends Frame {
     /*Checkbox cbViewAll; cbViewPredators, cbViewHerbivores, cbViewGrasses;*/
     Button viewListButton = new Button("Просмотреть");
 
-    List list = new List();
+    List foodsList = new List();
 
     // creation part
     Panel creationPanel = new Panel();
@@ -113,7 +113,7 @@ public class AnimalClientForm extends Frame {
         cbViewGrasses.setBounds(460, 0, 150, 50);
          */
 
-        list.setBounds(10, 50, 400, 80);
+        foodsList.setBounds(10, 50, 400, 80);
         viewListButton.setBounds(420, 100, 120, 30);
 
         //listingPanel.add(cbViewAll);
@@ -123,7 +123,7 @@ public class AnimalClientForm extends Frame {
         listingPanel.add(cbViewGrasses);
          */
         listingPanel.add(viewListButton);
-        listingPanel.add(list);
+        listingPanel.add(foodsList);
 
         listingPanel.setLayout(null);
 
@@ -276,6 +276,32 @@ public class AnimalClientForm extends Frame {
             foodTypeToCreateChoice.add(aft);
     }
 
+    public void updateFoodListing(Map<String, FoodDto> foodCollection) {
+        if (foodCollection != null) {
+            this.foodsList.removeAll();
+            for (FoodDto food : foodCollection.values())
+                this.foodsList.add(food.getInfo());
+        }
+    }
+
+    public void updatePreyFoods(Map<String, FoodDto> allFoods) {
+        this.foodPreyChoice.removeAll();
+        this.foods.clear();
+
+        this.foods.putAll(allFoods);
+        for(FoodDto food : this.foods.values())
+            this.foodPreyChoice.add(food.getInfo());
+    }
+
+    public void updateAnimals(Map<String, FoodDto> animals) {
+        this.animalToFeedChoice.removeAll();
+        this.animals.clear();
+
+        this.animals.putAll(animals);
+        for (FoodDto animal : this.animals.values())
+            this.animalToFeedChoice.add(animal.getInfo());
+    }
+
     public HashMap<String, String> getAvailableFoodTypes() {
         return availableFoodTypes;
     }
@@ -332,8 +358,8 @@ public class AnimalClientForm extends Frame {
         return viewListButton;
     }
 
-    public List getList() {
-        return list;
+    public List getFoodsList() {
+        return foodsList;
     }
 
     public CheckboxGroup getCbgCreationGroup() {
@@ -371,5 +397,4 @@ public class AnimalClientForm extends Frame {
     public TextArea getStatusMessageTextArea() {
         return statusMessageTextArea;
     }
-
 }

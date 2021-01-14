@@ -45,10 +45,8 @@ public class AnimalClientFormListener implements ActionListener {
 
         Map<String, String> availableFoodTypes = GeneralClientController.sendGetFoodTypesRequest();
 
-        // initialising choices and adding checkboxes dynamically
         form.updateAvailableFoodTypes(availableFoodTypes);
-
-        updateFormData();
+        updateFoodsDataOnFormFeedingPart();
 
         form.onConnect();
     }
@@ -63,10 +61,7 @@ public class AnimalClientFormListener implements ActionListener {
         Checkbox selected = form.getCbgListingGroup().getSelectedCheckbox();
         Map<String, FoodDto> foodCollection = GeneralClientController.sendGetFoodsRequest(selected.getLabel());
 
-        if (foodCollection != null) {
-            for (FoodDto food : foodCollection.values())
-                form.getList().add(food.getInfo());
-        }
+        form.updateFoodListing(foodCollection);
     }
 
     private void creationPartHandler() {
@@ -84,7 +79,7 @@ public class AnimalClientFormListener implements ActionListener {
 
         GeneralClientController.sendCreateRequest(choiceKey, foodName, foodMass);
 
-        updateFormData();
+        updateFoodsDataOnFormFeedingPart();
     }
 
     private void feedingPartHandler() {
@@ -109,25 +104,17 @@ public class AnimalClientFormListener implements ActionListener {
 
         GeneralClientController.sendFeedRequest(animalToFeedKey, preyChoiceKey);
 
-        updateFormData();
+        updateFoodsDataOnFormFeedingPart();
     }
 
 
-    private void updateFormData() {
+    private void updateFoodsDataOnFormFeedingPart() {
         Map<String, FoodDto> allFoods = GeneralClientController.sendGetFoodsRequest("Все");
         Map<String, FoodDto> animals = GeneralClientController.sendGetFoodsRequest("Животные");
 
         // get all foods and animals to populate comboboxes in feeding part
-        if (allFoods != null) {
-            form.getFoods().putAll(allFoods);
-            for (FoodDto food : allFoods.values())
-                form.getFoodPreyChoice().add(food.getInfo());
-        }
+        form.updatePreyFoods(allFoods);
 
-        if (animals != null) {
-            form.getAnimals().putAll(animals);
-            for (FoodDto animal : animals.values())
-                form.getAnimalToFeedChoice().add(animal.getInfo());
-        }
+        form.updateAnimals(animals);
     }
 }
