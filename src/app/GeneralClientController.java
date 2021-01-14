@@ -1,8 +1,8 @@
 package app;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.type.TypeFactory;
 import shared.FormLogger;
 import shared.Logger;
 import shared.Request;
@@ -29,7 +29,6 @@ public class GeneralClientController {
         logger.logMessage(result);
     }
 
-
     public static void sendDisconnectRequest() {
         final String command = "stp";
 
@@ -47,7 +46,7 @@ public class GeneralClientController {
         Response response = sendGetRequest(new String[]{foodTypesAlias});
         logger.logMessage("Загружены данные для " + "\"" + foodTypesAlias + "\"");
 
-        return parseJsonString(response.getMessage());
+        return parseJsonString(response.getMessage(), String.class);
     }
 
     public static Map<String, FoodDto> sendGetFoodsRequest(String foodType) {
@@ -76,7 +75,7 @@ public class GeneralClientController {
         Response response = sendGetRequest(Arrays.copyOf(requestArgs.toArray(), requestArgs.size(), String[].class));
         logger.logMessage("Загружены данные для " + "\"" + foodType + "\"");
 
-        return parseJsonString(response.getMessage());
+        return parseJsonString(response.getMessage(), FoodDto.class);
     }
 
     public static void sendCreateRequest(String foodType, String foodName, String foodMass) {
@@ -97,20 +96,6 @@ public class GeneralClientController {
         logger.logMessage(response.getMessage());
     }
 
-    public static <E> Map<String, E> parseJsonString(String responseString) {
-        Map<String, E> objectCollection = null;
-        final ObjectMapper objectMapper = new ObjectMapper();
-        final TypeReference<HashMap<String, E>> typeRef = new TypeReference<HashMap<String, E>>() {
-        };
-
-        try {
-            objectCollection = objectMapper.readValue(responseString, typeRef);
-        } catch (JsonProcessingException e) {
-            e.printStackTrace();
-        }
-        return objectCollection;
-    }
-
     private static Response sendGetRequest(String[] arguments) {
         final String command = "get";
 
@@ -128,5 +113,19 @@ public class GeneralClientController {
         }
 
         return response;
+    }
+
+
+    private static <V> HashMap<String, V> parseJsonString(String responseString, Class<V> valueClass) {
+        HashMap<String, V> objectCollection = null;
+        final ObjectMapper objectMapper = new ObjectMapper();
+        final TypeFactory typeFactory = objectMapper.getTypeFactory();
+
+        try {
+            objectCollection = objectMapper.readValue(responseString, typeFactory.constructMapType(HashMap.class, String.class, valueClass));
+        } catch (JsonProcessingException e) {
+            e.printStackTrace();
+        }
+        return objectCollection;
     }
 }
