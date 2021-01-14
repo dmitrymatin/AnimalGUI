@@ -24,9 +24,15 @@ public class GeneralClientController {
         clientFormListener = new AnimalClientFormListener(clientForm);
     }
 
-    public static void sendConnectRequest() {
-        String result = NetworkController.connect();
-        logger.logMessage(result);
+    public static boolean sendConnectRequest() {
+        try {
+            String result = NetworkController.connect();
+            logger.logMessage(result);
+            return true;
+        } catch (Exception e) {
+            logger.logMessage("Ошибка: " + e.getMessage());
+            return false;
+        }
     }
 
     public static void sendDisconnectRequest() {
@@ -36,14 +42,13 @@ public class GeneralClientController {
         Response response = sendRequest(request);
 
         NetworkController.disconnect();
-
-        logger.logMessage(response.getMessage());
     }
 
     public static Map<String, String> sendGetFoodTypesRequest() {
-        final String foodTypesAlias = "foodTypes";
+        final String foodTypes = "foodTypes";
+        final String foodTypesAlias = "Виды еды";
 
-        Response response = sendGetRequest(new String[]{foodTypesAlias});
+        Response response = sendGetRequest(new String[]{foodTypes});
         logger.logMessage("Загружены данные для " + "\"" + foodTypesAlias + "\"");
 
         return parseJsonString(response.getMessage(), String.class);

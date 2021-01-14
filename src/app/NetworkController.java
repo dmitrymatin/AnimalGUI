@@ -13,7 +13,7 @@ public class NetworkController {
     private static DataOutputStream out;
     private static DataInputStream in;
 
-    public static String connect() {
+    public static String connect() throws Exception {
         String result;
         try {
             port = 7070; // TODO: refactor hardcoded
@@ -22,15 +22,12 @@ public class NetworkController {
             out = new DataOutputStream(socket.getOutputStream());
             in = new DataInputStream(socket.getInputStream());
 
-            result = getResponse();
+            return getResponse();
         } catch (UnknownHostException e) {
-            result = "Ошибка: неизвестный хост";
-            e.printStackTrace();
+            throw new Exception("неизвестный хост");
         } catch (IOException e) {
-            result = "Возникла ошибка при создании подключения";
-            e.printStackTrace();
+            throw new Exception("неудалось подключиться");
         }
-        return result;
     }
 
     public static void disconnect() {

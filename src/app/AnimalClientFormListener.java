@@ -41,7 +41,9 @@ public class AnimalClientFormListener implements ActionListener {
     }
 
     private void connectHandler() {
-        GeneralClientController.sendConnectRequest();
+        boolean connected = GeneralClientController.sendConnectRequest();
+        if (!connected)
+            return;
 
         Map<String, String> availableFoodTypes = GeneralClientController.sendGetFoodTypesRequest();
 
@@ -84,7 +86,10 @@ public class AnimalClientFormListener implements ActionListener {
 
     private void feedingPartHandler() {
         String animalToFeedChoice = form.getAnimalToFeedChoice().getSelectedItem();
+//        int animalToFeedChoiceIndex = form.getAnimalToFeedChoice().getSelectedIndex();
+
         String preyChoice = form.getFoodPreyChoice().getSelectedItem();
+//        int preyChoiceIndex = form.foodPreyChoice.getSelectedIndex();
 
         String animalToFeedKey = "";
         for (String key : form.getAnimals().keySet()){
