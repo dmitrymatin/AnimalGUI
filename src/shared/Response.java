@@ -12,6 +12,9 @@ public class Response {
     }
 
     public static Response parseResponse(String responseString) {
+        if (responseString == null)
+            return new Response(false, true, "Ошибка: запрос не был осуществлен");
+
         boolean closureStatus = responseString.startsWith("стоп"); //todo regex
         boolean errorStatus = responseString.startsWith("ошибка");
 
