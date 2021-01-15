@@ -9,31 +9,42 @@ import shared.Request;
 import shared.Response;
 
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
 public class GeneralClientController {
-    private static AnimalClientForm clientForm = null;
-    private static AnimalClientFormListener clientFormListener = null;
     private static Logger logger = null;
 
     public static void startApp() {
-        clientForm = new AnimalClientForm("Animal World");
+        AnimalClientForm clientForm = new AnimalClientForm("Animal World");
+        AnimalClientFormListener clientFormListener = new AnimalClientFormListener(clientForm, logger);
         logger = new FormLogger(clientForm.getStatusMessageTextArea());
-        clientFormListener = new AnimalClientFormListener(clientForm, logger);
     }
 
-    public static boolean sendConnectRequest() {
+    public static boolean sendConnectRequest(String hostString, String portString) {
         try {
-            String result = NetworkController.connect();
+            InetAddress host = InetAddress.getByName(hostString);
+            int port = Integer.parseInt(portString);
+            if (!(port >= 0 && port <= 65535))
+                throw new IllegalArgumentException();
+
+            String result = NetworkController.connect(host.getHostAddress(), port);
             logger.logMessage(result);
-            return true;
+        } catch (UnknownHostException e) {
+            logger.logMessage("Ошибка: неизвестный хост");
+            return false;
+        } catch (IllegalArgumentException e) {
+            logger.logMessage("Ошибка: неверное значение порта");
+            return false;
         } catch (Exception e) {
             logger.logMessage("Ошибка: " + e.getMessage());
             return false;
         }
+        return true;
     }
 
     public static void sendDisconnectRequest() {

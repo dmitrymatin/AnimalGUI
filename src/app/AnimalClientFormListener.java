@@ -45,7 +45,10 @@ public class AnimalClientFormListener implements ActionListener {
     }
 
     private void connectHandler() {
-        boolean connected = GeneralClientController.sendConnectRequest();
+        String host = form.getHostTextField().getText();
+        String port = form.getPortTextField().getText();
+
+        boolean connected = GeneralClientController.sendConnectRequest(host, port);
         if (!connected)
             return;
 
