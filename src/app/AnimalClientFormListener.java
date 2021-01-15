@@ -1,14 +1,19 @@
 package app;
 
+import shared.Logger;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.Map;
 
 public class AnimalClientFormListener implements ActionListener {
     private final AnimalClientForm form;
+    private final Logger logger;
 
-    public AnimalClientFormListener(AnimalClientForm form) {
+    public AnimalClientFormListener(AnimalClientForm form, Logger logger) {
         this.form = form;
+        this.logger = logger;
 
         this.form.getConnectButton().addActionListener(this);
         this.form.getDisconnectButton().addActionListener(this);
@@ -39,61 +44,83 @@ public class AnimalClientFormListener implements ActionListener {
         form.onExit();
     }
 
-    private void disconnectHandler() {
-        form.onDisconnect();
+    private void connectHandler() {
+        String host = form.getHostTextField().getText();
+        String port = form.getPortTextField().getText();
+
+        boolean connected = GeneralClientController.sendConnectRequest(host, port);
+        if (!connected)
+            return;
+
+        Map<String, String> availableFoodTypes = GeneralClientController.sendGetFoodTypesRequest();
+
+        form.updateAvailableFoodTypes(availableFoodTypes);
+        updateFoodsDataOnFormFeedingPart();
+
+        form.onConnect();
     }
 
-    private void connectHandler() {
-        form.onConnect();
+    private void disconnectHandler() {
+        GeneralClientController.sendDisconnectRequest();
+
+        form.onDisconnect();
     }
 
     private void listingPartHandler() {
         Checkbox selected = form.getCbgListingGroup().getSelectedCheckbox();
-        String queryString = "get";
 
-        if (selected == form.getCbViewAll()) {
-            // просмотр всех
-            queryString += " -all";
-        } else if (selected == form.getCbViewPredators()) {
-            // просмотр хищников
-            queryString += " -pred [-all]";
-        } else if (selected == form.getCbViewHerbivores()) {
-            // просмотр травоядных
-            queryString += " -herb [-all]";
-        } else if (selected == form.getCbViewGrasses()) {
-            // просмотр травы
-            queryString += " -grass [-all]";
-        }
-        GeneralClientController.sendRequest(queryString);
+        Map<String, FoodDto> foodCollection = GeneralClientController.sendGetFoodsRequest(selected.getLabel());
+
+        form.updateFoodListing(foodCollection);
     }
 
     private void creationPartHandler() {
         String choiceStr = form.getFoodTypeToCreateChoice().getSelectedItem();
         String foodName = form.getNameTextField().getText().trim();
         String foodMass = form.getMassTextField().getText().trim();
+        String choiceKey = "";
 
-        String queryString = "create";
-
-        if (choiceStr.equals("хищник")) {
-            queryString += (" -pred");
-        } else if (choiceStr.equals("травоядное")) {
-            queryString += (" -herb");
-        } else if (choiceStr.equals("трава")) {
-            queryString += (" -grass");
+        for (String key : form.getAvailableFoodTypes().keySet()) {
+            if (choiceStr.equals(form.getAvailableFoodTypes().get(key))) {
+                choiceKey = key;
+                break;
+            }
         }
-        queryString += (" -name=" + foodName + " -mass=" + foodMass); // todo: validate mass is number?
 
-        GeneralClientController.sendRequest(queryString);
+        GeneralClientController.sendCreateRequest(choiceKey, foodName, foodMass);
+
+        updateFoodsDataOnFormFeedingPart();
     }
 
     private void feedingPartHandler() {
-        //Object whoToFeed = form.getAnimalToFeedChoice().getSelectedObjects()[0]; // see: https://docs.oracle.com/javase/7/docs/api/java/awt/Choice.html#getSelectedObjects()
-        //Object prey = form.getFoodPreyChoice().getSelectedObjects()[0];
-        //if (whoToFeed instanceof )
+        String animalToFeedChoice = form.getAnimalToFeedChoice().getSelectedItem();
+        int animalToFeedChoiceIndex = form.getAnimalToFeedChoice().getSelectedIndex();
 
-        String whoToFeed = form.getAnimalToFeedChoice().getSelectedItem().trim();
-        String prey = form.getFoodPreyChoice().getSelectedItem().trim();
+        String preyChoice = form.getFoodPreyChoice().getSelectedItem();
+        int preyChoiceIndex = form.foodPreyChoice.getSelectedIndex();
+
+        Map.Entry<String, FoodDto> selectedAnimalEntry = form.getAnimals().get(animalToFeedChoiceIndex);
+        Map.Entry<String, FoodDto> selectedFoodEntry = form.getFoods().get(preyChoiceIndex);
+
+        if (!selectedAnimalEntry.getValue().getInfo().equals(animalToFeedChoice) // double check correctness
+                || !selectedFoodEntry.getValue().getInfo().equals(preyChoice)){
+            logger.logMessage("Ошибка при выборе животного. Запрос прерыван");
+            return;
+        }
+
+        GeneralClientController.sendFeedRequest(selectedAnimalEntry.getKey(), selectedFoodEntry.getKey());
+
+        updateFoodsDataOnFormFeedingPart();
+    }
 
 
+    private void updateFoodsDataOnFormFeedingPart() {
+        Map<String, FoodDto> allFoods = GeneralClientController.sendGetFoodsRequest("Все");
+        Map<String, FoodDto> animals = GeneralClientController.sendGetFoodsRequest("Животные");
+
+        // get all foods and animals to populate comboboxes in feeding part
+        form.updatePreyFoods(allFoods);
+
+        form.updateAnimals(animals);
     }
 }
