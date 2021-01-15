@@ -8,66 +8,35 @@ import java.net.UnknownHostException;
 
 public class NetworkController {
     private static Socket socket;
-    private static int port;
 
     private static DataOutputStream out;
     private static DataInputStream in;
 
-    public static String connect() {
-        String result;
+    public static String connect(String hostName, int port) throws Exception {
         try {
-            port = 7070; // TODO: refactor hardcoded
-            socket = new Socket("localhost", port);
-
+            socket = new Socket(hostName, port);
             out = new DataOutputStream(socket.getOutputStream());
             in = new DataInputStream(socket.getInputStream());
-
-            result = getResponse();
         } catch (UnknownHostException e) {
-            result = "Ошибка: неизвестный хост";
-            e.printStackTrace();
+            throw new Exception("неизвестный хост");
         } catch (IOException e) {
-            result = "Возникла ошибка при создании подключения";
-            e.printStackTrace();
+            throw new Exception("не удалось подключиться");
         }
-        return result;
+        return getResponse();
     }
 
-    public static void disconnect(){
-        try {
-            in.close();
-            out.close();
-            socket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return;
-        }
-        System.out.println("Клиентский сокет для порта " + port + " закрыт\n");
+    public static void disconnect() throws IOException {
+        in.close();
+        out.close();
+        socket.close();
     }
 
-    public static String sendRequest(Request request) {
-        try {
-            out.writeUTF(request.toString());
-            return getResponse();
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        return null;
+    public static String sendRequest(Request request) throws IOException {
+        out.writeUTF(request.toString());
+        return getResponse();
     }
 
-    public static String getResponse(){
-
-        String response = null;
-        try {
-            response = in.readUTF();
-        } catch (IOException exception) {
-            exception.printStackTrace();
-            response = "возникла ошибка при чтении данных с сервера";
-        }
-
-        return response;
+    public static String getResponse() throws IOException {
+        return in.readUTF();
     }
 }
