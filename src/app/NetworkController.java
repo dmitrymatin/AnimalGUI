@@ -26,7 +26,7 @@ public class NetworkController {
         } catch (UnknownHostException e) {
             throw new Exception("неизвестный хост");
         } catch (IOException e) {
-            throw new Exception("неудалось подключиться");
+            throw new Exception("не удалось подключиться");
         }
     }
 

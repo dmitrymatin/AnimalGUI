@@ -7,9 +7,9 @@ import java.util.Map;
 
 public class AnimalClientForm extends Frame {
     HashMap<String, String> availableFoodTypes = new HashMap<>();
-    HashMap<String, FoodDto> animals = new HashMap<>();
-    HashMap<String, FoodDto> foods = new HashMap<>();
     ArrayList<Checkbox> checkboxes = new ArrayList<>();
+    ArrayList<Map.Entry<String, FoodDto>> animals = new ArrayList<>();
+    ArrayList<Map.Entry<String, FoodDto>> foods = new ArrayList<>();
 
     // networking part
     Panel netWorkingPanel = new Panel();
@@ -256,7 +256,7 @@ public class AnimalClientForm extends Frame {
 
         int x = 10;
         final int offset = 150;
-        Checkbox cb = new Checkbox("Все", cbgListingGroup, false);
+        Checkbox cb = new Checkbox("Все", cbgListingGroup, true);
         cb.setBounds(x, 0, 150, 50);
         this.checkboxes.add(cb);
         this.listingPanel.add(cb);
@@ -285,32 +285,33 @@ public class AnimalClientForm extends Frame {
     }
 
     public void updatePreyFoods(Map<String, FoodDto> allFoods) {
-        this.foodPreyChoice.removeAll();
         this.foods.clear();
+        this.foodPreyChoice.removeAll();
 
-        this.foods.putAll(allFoods);
-        for(FoodDto food : this.foods.values())
-            this.foodPreyChoice.add(food.getInfo());
+        this.foods.addAll(allFoods.entrySet());
+        for (Map.Entry<String, FoodDto> foodDtoEntry : this.foods){
+            this.foodPreyChoice.add(foodDtoEntry.getValue().getInfo());
+        }
     }
 
     public void updateAnimals(Map<String, FoodDto> animals) {
-        this.animalToFeedChoice.removeAll();
         this.animals.clear();
+        this.animalToFeedChoice.removeAll();
 
-        this.animals.putAll(animals);
-        for (FoodDto animal : this.animals.values())
-            this.animalToFeedChoice.add(animal.getInfo());
+        this.animals.addAll(animals.entrySet());
+        for (Map.Entry<String, FoodDto> animalDtoEntry : this.animals)
+            this.animalToFeedChoice.add(animalDtoEntry.getValue().getInfo());
     }
 
     public HashMap<String, String> getAvailableFoodTypes() {
         return availableFoodTypes;
     }
 
-    public HashMap<String, FoodDto> getAnimals() {
+    public ArrayList<Map.Entry<String, FoodDto>> getAnimals() {
         return animals;
     }
 
-    public HashMap<String, FoodDto> getFoods() {
+    public ArrayList<Map.Entry<String, FoodDto>> getFoods() {
         return foods;
     }
 

@@ -1,5 +1,7 @@
 package app;
 
+import shared.Logger;
+
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -7,9 +9,11 @@ import java.util.Map;
 
 public class AnimalClientFormListener implements ActionListener {
     private final AnimalClientForm form;
+    private final Logger logger;
 
-    public AnimalClientFormListener(AnimalClientForm form) {
+    public AnimalClientFormListener(AnimalClientForm form, Logger logger) {
         this.form = form;
+        this.logger = logger;
 
         this.form.getConnectButton().addActionListener(this);
         this.form.getDisconnectButton().addActionListener(this);
@@ -61,6 +65,7 @@ public class AnimalClientFormListener implements ActionListener {
 
     private void listingPartHandler() {
         Checkbox selected = form.getCbgListingGroup().getSelectedCheckbox();
+
         Map<String, FoodDto> foodCollection = GeneralClientController.sendGetFoodsRequest(selected.getLabel());
 
         form.updateFoodListing(foodCollection);
@@ -86,28 +91,21 @@ public class AnimalClientFormListener implements ActionListener {
 
     private void feedingPartHandler() {
         String animalToFeedChoice = form.getAnimalToFeedChoice().getSelectedItem();
-//        int animalToFeedChoiceIndex = form.getAnimalToFeedChoice().getSelectedIndex();
+        int animalToFeedChoiceIndex = form.getAnimalToFeedChoice().getSelectedIndex();
 
         String preyChoice = form.getFoodPreyChoice().getSelectedItem();
-//        int preyChoiceIndex = form.foodPreyChoice.getSelectedIndex();
+        int preyChoiceIndex = form.foodPreyChoice.getSelectedIndex();
 
-        String animalToFeedKey = "";
-        for (String key : form.getAnimals().keySet()){
-            if (animalToFeedChoice.equals(form.getAnimals().get(key).getInfo())){
-                animalToFeedKey = key;
-                break;
-            }
+        Map.Entry<String, FoodDto> selectedAnimalEntry = form.getAnimals().get(animalToFeedChoiceIndex);
+        Map.Entry<String, FoodDto> selectedFoodEntry = form.getFoods().get(preyChoiceIndex);
+
+        if (!selectedAnimalEntry.getValue().getInfo().equals(animalToFeedChoice) // double check correctness
+                || !selectedFoodEntry.getValue().getInfo().equals(preyChoice)){
+            logger.logMessage("Ошибка при выборе животного. Запрос прерыван");
+            return;
         }
 
-        String preyChoiceKey = "";
-        for (String key : form.getFoods().keySet()){
-            if (preyChoice.equals(form.getFoods().get(key).getInfo())){
-                preyChoiceKey = key;
-                break;
-            }
-        }
-
-        GeneralClientController.sendFeedRequest(animalToFeedKey, preyChoiceKey);
+        GeneralClientController.sendFeedRequest(selectedAnimalEntry.getKey(), selectedFoodEntry.getKey());
 
         updateFoodsDataOnFormFeedingPart();
     }

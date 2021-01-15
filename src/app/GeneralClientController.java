@@ -21,7 +21,7 @@ public class GeneralClientController {
     public static void startApp() {
         clientForm = new AnimalClientForm("Animal World");
         logger = new FormLogger(clientForm.getStatusMessageTextArea());
-        clientFormListener = new AnimalClientFormListener(clientForm);
+        clientFormListener = new AnimalClientFormListener(clientForm, logger);
     }
 
     public static boolean sendConnectRequest() {
