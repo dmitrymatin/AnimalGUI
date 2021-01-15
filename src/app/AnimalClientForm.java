@@ -240,6 +240,9 @@ public class AnimalClientForm extends Frame {
 
 
     public void updateAvailableFoodTypes(Map<String, String> foodTypes) {
+        if (foodTypes == null)
+            return;
+
         this.availableFoodTypes.clear();
         this.availableFoodTypes.putAll(foodTypes);
 
@@ -277,24 +280,31 @@ public class AnimalClientForm extends Frame {
     }
 
     public void updateFoodListing(Map<String, FoodDto> foodCollection) {
-        if (foodCollection != null) {
-            this.foodsList.removeAll();
-            for (FoodDto food : foodCollection.values())
-                this.foodsList.add(food.getInfo());
-        }
+        if (foodCollection == null)
+            return;
+
+        this.foodsList.removeAll();
+        for (FoodDto food : foodCollection.values())
+            this.foodsList.add(food.getInfo());
     }
 
     public void updatePreyFoods(Map<String, FoodDto> allFoods) {
+        if (allFoods == null)
+            return;
+
         this.foods.clear();
         this.foodPreyChoice.removeAll();
 
         this.foods.addAll(allFoods.entrySet());
-        for (Map.Entry<String, FoodDto> foodDtoEntry : this.foods){
+        for (Map.Entry<String, FoodDto> foodDtoEntry : this.foods) {
             this.foodPreyChoice.add(foodDtoEntry.getValue().getInfo());
         }
     }
 
     public void updateAnimals(Map<String, FoodDto> animals) {
+        if (animals == null)
+            return;
+
         this.animals.clear();
         this.animalToFeedChoice.removeAll();
 

@@ -8,6 +8,7 @@ import shared.Logger;
 import shared.Request;
 import shared.Response;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -40,8 +41,13 @@ public class GeneralClientController {
 
         Request request = new Request(command);
         Response response = sendRequest(request);
+        logger.logMessage(response.getMessage());
 
-        NetworkController.disconnect();
+        try {
+            NetworkController.disconnect();
+        } catch (IOException exception) {
+            logger.logMessage("Произошла ошибка во время отключения");
+        }
     }
 
     public static Map<String, String> sendGetFoodTypesRequest() {
@@ -49,8 +55,10 @@ public class GeneralClientController {
         final String foodTypesAlias = "Виды еды";
 
         Response response = sendGetRequest(new String[]{foodTypes});
-        logger.logMessage("Загружены данные для " + "\"" + foodTypesAlias + "\"");
+        if (response.isClosureStatus() || response.isErrorStatus())
+            return null;
 
+        logger.logMessage("Загружены данные для " + "\"" + foodTypesAlias + "\"");
         return parseJsonString(response.getMessage(), String.class);
     }
 
@@ -78,8 +86,10 @@ public class GeneralClientController {
         }
 
         Response response = sendGetRequest(Arrays.copyOf(requestArgs.toArray(), requestArgs.size(), String[].class));
-        logger.logMessage("Загружены данные для " + "\"" + foodType + "\"");
+        if (response.isClosureStatus() || response.isErrorStatus())
+            return null;
 
+        logger.logMessage("Загружены данные для " + "\"" + foodType + "\"");
         return parseJsonString(response.getMessage(), FoodDto.class);
     }
 
@@ -110,14 +120,13 @@ public class GeneralClientController {
 
     private static Response sendRequest(Request request) {
         // todo: multithreading
-        String responseString = NetworkController.sendRequest(request);
-        Response response = Response.parseResponse(responseString);
-
-        if (response.isClosureStatus() || response.isErrorStatus()) {
-            logger.logMessage(response.getMessage());
+        String responseString = null;
+        try {
+            responseString = NetworkController.sendRequest(request);
+        } catch (IOException exception) {
+            exception.printStackTrace();
         }
-
-        return response;
+        return Response.parseResponse(responseString);
     }
 
 

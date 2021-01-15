@@ -30,37 +30,19 @@ public class NetworkController {
         }
     }
 
-    public static void disconnect() {
-        try {
-            in.close();
-            out.close();
-            socket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return;
-        }
+    public static void disconnect() throws IOException {
+        in.close();
+        out.close();
+        socket.close();
         System.out.println("Клиентский сокет для порта " + port + " закрыт\n");
     }
 
-    public static String sendRequest(Request request) {
-        try {
-            out.writeUTF(request.toString());
-            return getResponse();
-        } catch (IOException e) {
-            e.printStackTrace();
-            return "";
-        }
+    public static String sendRequest(Request request) throws IOException {
+        out.writeUTF(request.toString());
+        return getResponse();
     }
 
-    public static String getResponse() {
-        String response = null;
-        try {
-            response = in.readUTF();
-        } catch (IOException exception) {
-            exception.printStackTrace();
-            response = "возникла ошибка при чтении данных с сервера";
-        }
-
-        return response;
+    public static String getResponse() throws IOException {
+        return in.readUTF();
     }
 }
