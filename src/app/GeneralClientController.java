@@ -28,23 +28,22 @@ public class GeneralClientController {
     public static boolean sendConnectRequest(String hostString, String portString) {
         try {
             InetAddress host = InetAddress.getByName(hostString);
-            int port = Integer.parseInt(portString);
+
+            int port = Integer.parseInt(portString.trim());
             if (!(port >= 0 && port <= 65535))
                 throw new IllegalArgumentException();
 
             String result = NetworkController.connect(host.getHostAddress(), port);
             logger.logMessage(result);
+            return true;
         } catch (UnknownHostException e) {
             logger.logMessage("Ошибка: неизвестный хост");
-            return false;
         } catch (IllegalArgumentException e) {
             logger.logMessage("Ошибка: неверное значение порта");
-            return false;
         } catch (Exception e) {
             logger.logMessage("Ошибка: " + e.getMessage());
-            return false;
         }
-        return true;
+        return false;
     }
 
     public static void sendDisconnectRequest() {
