@@ -55,11 +55,14 @@ public class GeneralClientController {
         final String foodTypesAlias = "Виды еды";
 
         Response response = sendGetRequest(new String[]{foodTypes});
-        if (response.isClosureStatus() || response.isErrorStatus())
+        if (response.isClosureStatus() || response.isErrorStatus()) {
+            logger.logMessage(response.getMessage());
             return null;
+        }
 
-        logger.logMessage("Загружены данные для " + "\"" + foodTypesAlias + "\"");
-        return parseJsonString(response.getMessage(), String.class);
+        Map<String, String> foodTypesMap = parseJsonString(response.getMessage(), String.class);
+        reportSuccessfulJsonParsing(foodTypesMap, foodTypesAlias);
+        return foodTypesMap;
     }
 
     public static Map<String, FoodDto> sendGetFoodsRequest(String foodType) {
@@ -86,11 +89,14 @@ public class GeneralClientController {
         }
 
         Response response = sendGetRequest(Arrays.copyOf(requestArgs.toArray(), requestArgs.size(), String[].class));
-        if (response.isClosureStatus() || response.isErrorStatus())
+        if (response.isClosureStatus() || response.isErrorStatus()) {
+            logger.logMessage(response.getMessage());
             return null;
+        }
 
-        logger.logMessage("Загружены данные для " + "\"" + foodType + "\"");
-        return parseJsonString(response.getMessage(), FoodDto.class);
+        Map<String, FoodDto> foods = parseJsonString(response.getMessage(), FoodDto.class);
+        reportSuccessfulJsonParsing(foods, foodType);
+        return foods;
     }
 
     public static void sendCreateRequest(String foodType, String foodName, String foodMass) {
@@ -123,9 +129,9 @@ public class GeneralClientController {
         String responseString = null;
         try {
             responseString = NetworkController.sendRequest(request);
-        } catch (IOException exception) {
-            exception.printStackTrace();
+        } catch (IOException exception) { // exception.printStackTrace();
         }
+
         return Response.parseResponse(responseString);
     }
 
@@ -141,5 +147,15 @@ public class GeneralClientController {
             e.printStackTrace();
         }
         return objectCollection;
+    }
+
+    private static <V> void reportSuccessfulJsonParsing(Map<String, V> map, String foodType) {
+        int mapCount = 0;
+        if (map != null) {
+            mapCount = map.size();
+            logger.logMessage("Загружены данные для " + "\"" + foodType + "\": " + mapCount + " элементов");
+        } else {
+            logger.logMessage("Для " + "\"" + foodType + "\" запрос вернул " + mapCount + " элементов");
+        }
     }
 }
