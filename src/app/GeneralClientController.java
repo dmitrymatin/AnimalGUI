@@ -135,11 +135,11 @@ public class GeneralClientController {
     }
 
     private static Response sendRequest(Request request) {
-        // todo: multithreading
         String responseString = null;
         try {
             responseString = NetworkController.sendRequest(request);
-        } catch (IOException exception) { // exception.printStackTrace();
+        } catch (IOException exception) {
+            exception.printStackTrace();
         }
 
         return Response.parseResponse(responseString);

@@ -15,7 +15,7 @@ public class Response {
         if (responseString == null)
             return new Response(false, true, "Ошибка: запрос не был осуществлен");
 
-        boolean closureStatus = responseString.startsWith("стоп"); //todo regex
+        boolean closureStatus = responseString.startsWith("стоп");
         boolean errorStatus = responseString.startsWith("ошибка");
 
         return new Response(closureStatus, errorStatus, responseString);
