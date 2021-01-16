@@ -95,43 +95,18 @@ public class AnimalClientForm extends Frame {
     }
 
     private void initialiseListingPart() {
-        //cbViewAll = new Checkbox("Все", cbgListingGroup, false);
-        /*
-        cbViewPredators = new Checkbox("Хищники", cbgListingGroup, false);
-        cbViewHerbivores = new Checkbox("Травоядные", cbgListingGroup, false);
-        cbViewGrasses = new Checkbox("Трава", cbgListingGroup, false);
-         */
-
         listingPanel.setBounds(30, 150, 700, 150);
         listingPanel.setBackground(new Color(226, 226, 226));
-
-//        cbViewAll.setBounds(10, 0, 150, 50);
-//        lastCheckboxCoordX = cbViewAll.getX();
-
-        /*
-        cbViewPredators.setBounds(160, 0, 150, 50);
-        cbViewHerbivores.setBounds(310, 0, 150, 50);
-        cbViewGrasses.setBounds(460, 0, 150, 50);
-         */
 
         foodsList.setBounds(10, 50, 400, 80);
         viewListButton.setBounds(420, 100, 120, 30);
 
-        //listingPanel.add(cbViewAll);
-        /*
-        listingPanel.add(cbViewPredators);
-        listingPanel.add(cbViewHerbivores);
-        listingPanel.add(cbViewGrasses);
-         */
         listingPanel.add(viewListButton);
         listingPanel.add(foodsList);
 
         listingPanel.setLayout(null);
 
         add(listingPanel);
-
-//        for (int i = 0; i < 30; i++)
-//            list.add(Integer.toString(i));
 
         listingPanel.setEnabled(false);
     }
@@ -150,12 +125,6 @@ public class AnimalClientForm extends Frame {
 
         createAnimalButton.setBounds(10, 85, 120, 30);
 
-        /*
-        foodTypeToCreateChoice.add("Хищник");
-        foodTypeToCreateChoice.add("Травоядное");
-        foodTypeToCreateChoice.add("Трава");
-         */
-
         creationPanel.add(creationLabel);
         creationPanel.add(createAnimalButton);
         creationPanel.add(foodTypeToCreateChoice);
@@ -166,7 +135,6 @@ public class AnimalClientForm extends Frame {
 
         creationPanel.setLayout(null);
         add(creationPanel);
-
 
         creationPanel.setEnabled(false);
     }
@@ -349,22 +317,6 @@ public class AnimalClientForm extends Frame {
     public CheckboxGroup getCbgListingGroup() {
         return cbgListingGroup;
     }
-
-//    public Checkbox getCbViewAll() {
-//        return cbViewAll;
-//    }
-
-/*    public Checkbox getCbViewPredators() {
-        return cbViewPredators;
-    }
-
-    public Checkbox getCbViewHerbivores() {
-        return cbViewHerbivores;
-    }
-
-    public Checkbox getCbViewGrasses() {
-        return cbViewGrasses;
-    }*/
 
     public Button getViewListButton() {
         return viewListButton;
