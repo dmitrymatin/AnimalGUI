@@ -4,6 +4,7 @@ import java.awt.*;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Properties;
 
 public class AnimalClientForm extends Frame {
     HashMap<String, String> availableFoodTypes = new HashMap<>();
@@ -89,8 +90,8 @@ public class AnimalClientForm extends Frame {
 
         disconnectButton.setEnabled(false);
 
-        hostTextField.setText("localhost");
-        portTextField.setText("7070");
+        hostTextField.setText(GeneralClientController.getProperties().getProperty("DEFAULT_HOST"));
+        portTextField.setText(GeneralClientController.getProperties().getProperty("DEFAULT_PORT"));
     }
 
     private void initialiseListingPart() {

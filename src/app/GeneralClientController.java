@@ -8,18 +8,23 @@ import shared.Logger;
 import shared.Request;
 import shared.Response;
 
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 public class GeneralClientController {
     private static Logger logger = null;
+    private static Properties properties = new Properties();
+    private final static String PROPS_FILENAME = "settings.properties";
 
     public static void startApp() {
+        try {
+            properties.load(new FileInputStream(PROPS_FILENAME));
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         AnimalClientForm clientForm = new AnimalClientForm("Animal World");
         AnimalClientFormListener clientFormListener = new AnimalClientFormListener(clientForm, logger);
         logger = new FormLogger(clientForm.getStatusMessageTextArea());
@@ -167,5 +172,9 @@ public class GeneralClientController {
         } else {
             logger.logMessage("Для " + "\"" + foodType + "\" запрос вернул " + mapCount + " элементов");
         }
+    }
+
+    public static Properties getProperties() {
+        return properties;
     }
 }
